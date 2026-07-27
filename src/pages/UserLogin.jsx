@@ -1,16 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 const UserLogin = () => {
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState({})
+  const navigate=useNavigate()
   async function submitHandler(e) {
     e.preventDefault();
-    setUserData({email,password});
-    userData;
+    try {
+      const data= {email:email,password:password}
+      const response=await api.post(`/users/login`,data);
+      if(response.status===201){
+        localStorage.setItem('token',response.data.token);
+        navigate('/home');
+      }
     setEmail("");
     setPassword("");
+    } catch (error) {
+      console.error(error.response?.data);
+    }
+    
   }
   return (
     <div className="p-7 flex flex-col justify-between h-screen">
