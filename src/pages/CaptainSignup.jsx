@@ -30,7 +30,7 @@ const CaptainSignup = () => {
           plate,
           capacity: Number(capacity),
           vehicleType:type,
-        },
+        }
       };
       const response = await api.post("/captains/register", captainData);
       if(response.status===201){

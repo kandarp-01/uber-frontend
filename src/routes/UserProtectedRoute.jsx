@@ -13,7 +13,9 @@ const UserProtectedRoute = ({children}) => {
         const fetchUser = async () => {
             try {
                 const response = await api.get("/users/profile");
+                if(response.data.user.role=="User"){
                 setUser(response.data.user);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -26,7 +28,7 @@ const UserProtectedRoute = ({children}) => {
     if(loading){
         return <h2>Loading...</h2>
     }
-    if(!user.email){
+    if(!user.email || !user.role=='User'){
         return <Navigate to='/login' replace/>
     }
     return children

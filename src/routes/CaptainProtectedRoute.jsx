@@ -11,7 +11,9 @@ const CaptainProtectedRoute = ({children}) => {
         const fetchCaptain = async () => {
             try {
                 const response = await api.get("/captains/profile");
+                if(response.data.captain.role=="Captain"){
                 setCaptain(response.data.captain);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -24,7 +26,7 @@ const CaptainProtectedRoute = ({children}) => {
     if(loading){
         return <h2>Loading...</h2>
     }
-    if(!captain.email){
+    if(!captain.email || !captain.role=='Captain'){
         return <Navigate to='/captain-login' replace/>
     }
     return children
