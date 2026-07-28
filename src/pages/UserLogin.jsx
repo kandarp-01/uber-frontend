@@ -13,7 +13,6 @@ const UserLogin = () => {
       const data= {email:email,password:password}
       const response=await api.post(`/users/login`,data);
       if(response.status===201){
-        localStorage.setItem('token',response.data.token);
         navigate('/home');
       }
     setEmail("");

@@ -1,16 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captainData, setCaptainData] = useState({})
+  const navigate=useNavigate();
   async function submitHandler(e) {
     e.preventDefault();
-    setCaptainData({email,password});
-    captainData;
-    setEmail("");
-    setPassword("");
+    try {
+      const captainData = { email, password };
+      const response=await api.post('/captains/login',captainData,{
+        withCredentials:true
+      })
+      if(response.status===201){
+        navigate('/captain-home');
+      }
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.error(error.response.data)
+    }
   }
   return (
     <div className="p-7 flex flex-col justify-between h-screen">
@@ -58,12 +68,15 @@ const CaptainLogin = () => {
         </p>
       </div>
       <div>
-        <Link to='/login' className="flex items-center justify-center bg-[#d5622d] text-white font-semibold mb-5 rounded px-4 py-2 w-full text-lg placeholder:text-base">
+        <Link
+          to="/login"
+          className="flex items-center justify-center bg-[#d5622d] text-white font-semibold mb-5 rounded px-4 py-2 w-full text-lg placeholder:text-base"
+        >
           Sign in as User
         </Link>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CaptainLogin
+export default CaptainLogin;
