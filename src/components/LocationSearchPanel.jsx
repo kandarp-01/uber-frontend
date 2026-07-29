@@ -1,7 +1,7 @@
 import { MapPin } from "lucide-react";
 import React from "react";
 
-const LocationSearchPanel = () => {
+const LocationSearchPanel = (props) => {
   const pickupLocations = [
     {
       name: "Kempegowda International Airport",
@@ -29,11 +29,14 @@ const LocationSearchPanel = () => {
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" onClick={()=>{
+      props.setVehiclePanelOpen(true);
+      props.setPanelOpen(false);
+    }}>
       {pickupLocations.map((item, idx) => (
         <div
           key={idx}
-          className="flex items-start gap-4 rounded-xl border-2 border-white p-3 cursor-pointer transition-all duration-200 hover:border-black hover:bg-gray-50"
+          className="flex items-center justify-start  gap-4 rounded-xl border-2 border-gray-200 active:border-gray-900 p-3 cursor-pointer "
         >
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
             <MapPin size={20} />
