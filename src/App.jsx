@@ -8,6 +8,7 @@ import Start from "./pages/Start"
 import UserProtectedRoute from "./routes/UserProtectedRoute"
 import CaptainProtectedRoute from "./routes/CaptainProtectedRoute"
 import CaptainHome from "./pages/CaptainHome"
+import Riding from "./components/Riding"
 
 const App = () => {
   return (
@@ -17,7 +18,8 @@ const App = () => {
         <Route path="/login" element={<UserLogin/>} />
         <Route path="/signup" element={<UserSignup/>} />
         <Route path="/captain-login" element={<CaptainLogin/>} />
-        <Route path="/captain-signup" element={<CaptainSignup/>} />     
+        <Route path="/captain-signup" element={<CaptainSignup/>} />  
+        <Route path="/riding" element={<Riding/>} />   
         <Route path="/home" element={<UserProtectedRoute><Home/></UserProtectedRoute>} />
         <Route path="/captain-home" element={<CaptainProtectedRoute><CaptainHome/></CaptainProtectedRoute>} />
       </Routes>
