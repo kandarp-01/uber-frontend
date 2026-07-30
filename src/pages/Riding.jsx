@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Riding = () => {
   return (
-    <div className="h-screen ">
+    <div className="h-screen">
         <Link to='/home' className="fixed right-2 top-2 h-10 w-10 flex items-center justify-center rounded-full bg-white">
             <House size={20} strokeWidth={2} />
         </Link>
@@ -15,14 +15,14 @@ const Riding = () => {
           alt=""
         />
       </div>
-      <div className="h-1/2 fixed w-full bottom-0 px-3 py-5 rounded-xl bg-white">
+      <div className="h-1/2 fixed w-full bottom-0 px-3 py-2 rounded-xl bg-white">
         
         <div className="flex items-center justify-between border-b-2 border-gray-400">
           <div className="flex">
             <img
-              src="https://cdn.iconscout.com/icon/free/png-256/free-driver-icon-svg-download-png-1518720.png"
+              src="https://media.wbur.org/wp/2020/07/Emmanuel-1000x776.jpg"
               alt=""
-              className="h-22 -mr-8 "
+              className="h-20 w-20 -mr-8 rounded-full "
             />
             <img
               src="https://d1a3f4spazzrp4.cloudfront.net/car-types/haloProductImages/v1.1/UberX_v1.png"

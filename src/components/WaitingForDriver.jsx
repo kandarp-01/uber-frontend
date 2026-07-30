@@ -22,9 +22,9 @@ const WaitingForDriver = (props) => {
       <div className='flex items-center justify-between border-b-2 border-gray-400'>
         <div className='flex'>
             <img
-          src="https://cdn.iconscout.com/icon/free/png-256/free-driver-icon-svg-download-png-1518720.png"
+          src="https://media.wbur.org/wp/2020/07/Emmanuel-1000x776.jpg"
           alt=""
-          className="h-22 -mr-8 "
+          className="h-22 w-22 -mr-8 rounded-full"
         />
             <img
           src="https://d1a3f4spazzrp4.cloudfront.net/car-types/haloProductImages/v1.1/UberX_v1.png"
@@ -67,6 +67,9 @@ const WaitingForDriver = (props) => {
               <p className="text-sm text-gray-600">Cash Cash</p>
             </div>
           </div>
+        </div>
+        <div className='w-full text-right flex justify-end'>
+          <h2 className='w-1/3 m-4 p-2 rounded-xl text-lg -mb-1 font-medium bg-yellow-400'>OTP:4536</h2>
         </div>
         
       </div>

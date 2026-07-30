@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown, LogOut, User } from "lucide-react";
 import LocationSearchPanel from "../components/LocationSearchPanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import api from "../api/api";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -17,11 +19,11 @@ const Home = () => {
   const vehiclePanelRef = useRef(null);
   const ridePanelRef = useRef(null);
   const driverPanelRef = useRef(null);
-  const [vehiclePanelOpen, setVehiclePanelOpen] = useState(false)
-  const [ridePanelOpen, setRidePanelOpen] = useState(false)
-  const [driverPanelOpen, setDriverPanelOpen] = useState(false)
+  const [vehiclePanelOpen, setVehiclePanelOpen] = useState(false);
+  const [ridePanelOpen, setRidePanelOpen] = useState(false);
+  const [driverPanelOpen, setDriverPanelOpen] = useState(false);
   const waitingPanelRef = useRef(null);
-  const [driverFoundPanelOpen, setDriverFoundPanelOpen] = useState(false)
+  const [driverFoundPanelOpen, setDriverFoundPanelOpen] = useState(false);
   async function submitHandler(e) {
     e.preventDefault();
   }
@@ -47,63 +49,89 @@ const Home = () => {
     },
     [panelOpen],
   );
-  useGSAP(function(){
-    if(vehiclePanelOpen){
-      gsap.to(vehiclePanelRef.current,{
-      transform:'translateY(0)'
-    })}
-    else{
-      gsap.to(vehiclePanelRef.current,{
-        transform:'translateY(100%)'
-      })
-    }
-    
-  },[vehiclePanelOpen])
-  useGSAP(function(){
-    if(ridePanelOpen){
-      gsap.to(ridePanelRef.current,{
-      transform:'translateY(0)'
-    })}
-    else{
-      gsap.to(ridePanelRef.current,{
-        transform:'translateY(100%)'
-      })
-    }
-    
-  },[ridePanelOpen])
-  useGSAP(function(){
-    if(driverPanelOpen){
-      gsap.to(driverPanelRef.current,{
-      transform:'translateY(0)'
-    })}
-    else{
-      gsap.to(driverPanelRef.current,{
-        transform:'translateY(100%)'
-      })
-    }
-    
-  },[driverPanelOpen])
+  useGSAP(
+    function () {
+      if (vehiclePanelOpen) {
+        gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [vehiclePanelOpen],
+  );
+  useGSAP(
+    function () {
+      if (ridePanelOpen) {
+        gsap.to(ridePanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(ridePanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [ridePanelOpen],
+  );
+  useGSAP(
+    function () {
+      if (driverPanelOpen) {
+        gsap.to(driverPanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(driverPanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [driverPanelOpen],
+  );
 
-  useGSAP(function(){
-    if(driverFoundPanelOpen){
-      gsap.to(waitingPanelRef.current,{
-      transform:'translateY(0)'
-    })}
-    else{
-      gsap.to(waitingPanelRef.current,{
-        transform:'translateY(100%)'
-      })
+  useGSAP(
+    function () {
+      if (driverFoundPanelOpen) {
+        gsap.to(waitingPanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(waitingPanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [driverFoundPanelOpen],
+  );
+
+  async function logMeOut() {
+    try {
+      await api.post("/users/logout", { withCredentials: true });
+    } catch (error) {
+      console.error(error.response.data);
     }
-    
-  },[driverFoundPanelOpen])
+  }
   return (
     <div className="h-screen relative overflow-hidden">
-      <img
-        className="w-16 absolute left-5 top-5"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/960px-Uber_logo_2018.svg.png"
-        alt=""
-      />
-
+      <div className="fixed p-6 top-0 flex items-center justify-between w-full">
+        <img
+          className="w-16"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/960px-Uber_logo_2018.svg.png"
+          alt=""
+        />
+        <Link
+          onClick={() => {
+            logMeOut();
+          }}
+          to="/captain-login"
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-white"
+        >
+          <LogOut size={16} strokeWidth={3} />
+        </Link>
+      </div>
       <div className="h-screen w-screen">
         <img
           className="h-full w-full object-cover"
@@ -128,7 +156,7 @@ const Home = () => {
               submitHandler(e);
             }}
           >
-            <div className="line absolute h-16 w-1 top-[40%] left-10 bg-gray-900 rounded-full"></div>
+            <div className="line absolute h-16 w-1 top-[43%] left-10 bg-gray-900 rounded-full"></div>
             <input
               className="bg-[#eee] px-12 py-2 text-xl rounded-lg w-full mt-5"
               onClick={() => {
@@ -156,19 +184,43 @@ const Home = () => {
           </form>
         </div>
         <div ref={panelRef} className="bg-white">
-          <LocationSearchPanel setPanelOpen={setPanelOpen} setVehiclePanelOpen={setVehiclePanelOpen} />
+          <LocationSearchPanel
+            setPanelOpen={setPanelOpen}
+            setVehiclePanelOpen={setVehiclePanelOpen}
+          />
         </div>
       </div>
-      <div ref={vehiclePanelRef} className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white">
-        <VehiclePanel setRidePanelOpen={setRidePanelOpen} setVehiclePanelOpen={setVehiclePanelOpen}/>
+      <div
+        ref={vehiclePanelRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
+      >
+        <VehiclePanel
+          setRidePanelOpen={setRidePanelOpen}
+          setVehiclePanelOpen={setVehiclePanelOpen}
+        />
       </div>
-      <div ref={ridePanelRef} className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white">
-        <ConfirmRide setDriverPanelOpen={setDriverPanelOpen} setRidePanelOpen={setRidePanelOpen}/>
+      <div
+        ref={ridePanelRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
+      >
+        <ConfirmRide
+          setDriverPanelOpen={setDriverPanelOpen}
+          setRidePanelOpen={setRidePanelOpen}
+        />
       </div>
-      <div ref={driverPanelRef} className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white">
-        <LookingForDriver setDriverFoundPanelOpen={setDriverFoundPanelOpen} setDriverPanelOpen={setDriverPanelOpen} />
+      <div
+        ref={driverPanelRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
+      >
+        <LookingForDriver
+          setDriverFoundPanelOpen={setDriverFoundPanelOpen}
+          setDriverPanelOpen={setDriverPanelOpen}
+        />
       </div>
-      <div ref={waitingPanelRef} className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white">
+      <div
+        ref={waitingPanelRef}
+        className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
+      >
         <WaitingForDriver setDriverFoundPanelOpen={setDriverFoundPanelOpen} />
       </div>
     </div>

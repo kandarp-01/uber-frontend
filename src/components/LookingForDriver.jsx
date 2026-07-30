@@ -7,7 +7,7 @@ const LookingForDriver = (props) => {
       <h5
         onClick={() => {
           props.setDriverPanelOpen(false);
-          props.setDriverFoundPanelOpen(true);
+          //props.setDriverFoundPanelOpen(true);
         }}
         className="absolute right-6 top-6 text-2xl"
       >
