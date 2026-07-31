@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 import LocationSearchPanel from "../components/LocationSearchPanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
@@ -13,6 +13,11 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
+  const [pickupQuery, setPickupQuery] = useState("");
+  const [destinationQuery, setDestinationQuery] = useState("");
+  const [activeField, setActiveField] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -27,6 +32,7 @@ const Home = () => {
   async function submitHandler(e) {
     e.preventDefault();
   }
+
   useGSAP(
     function () {
       if (panelOpen) {
@@ -49,6 +55,7 @@ const Home = () => {
     },
     [panelOpen],
   );
+
   useGSAP(
     function () {
       if (vehiclePanelOpen) {
@@ -63,6 +70,7 @@ const Home = () => {
     },
     [vehiclePanelOpen],
   );
+
   useGSAP(
     function () {
       if (ridePanelOpen) {
@@ -77,6 +85,7 @@ const Home = () => {
     },
     [ridePanelOpen],
   );
+
   useGSAP(
     function () {
       if (driverPanelOpen) {
@@ -107,13 +116,79 @@ const Home = () => {
     [driverFoundPanelOpen],
   );
 
+  useEffect(() => {
+    const query = activeField === "pickup" ? pickupQuery : destinationQuery;
+    const trimmedQuery = query.trim();
+
+    if (!activeField || trimmedQuery.length < 3) {
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsLoadingSuggestions(true);
+      try {
+        const response = await api.get("/maps/get-suggestions", {
+          params: { input: trimmedQuery },
+        });
+        setSuggestions(response.data || []);
+        setPanelOpen(!vehiclePanelOpen && (response.data || []).length > 0);
+      } catch (error) {
+        console.error(error);
+        setSuggestions([]);
+        setPanelOpen(false);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [activeField, pickupQuery, destinationQuery, vehiclePanelOpen]);
+
   async function logMeOut() {
     try {
       await api.post("/users/logout", { withCredentials: true });
     } catch (error) {
-      console.error(error.response.data);
+      console.error(error.response?.data || error.message);
     }
   }
+
+  const handleLocationInput = (field, value) => {
+    if (field === "pickup") {
+      setPickup(value);
+      setPickupQuery(value);
+    } else {
+      setDestination(value);
+      setDestinationQuery(value);
+    }
+
+    setActiveField(field);
+    setPanelOpen(value.trim().length >= 3);
+  };
+
+  const handleSuggestionSelect = (selectedLocation, field) => {
+    const nextPickup = field === "pickup" ? selectedLocation.name : pickup;
+    const nextDestination =
+      field === "destination" ? selectedLocation.name : destination;
+
+    if (field === "pickup") {
+      setPickup(selectedLocation.name);
+      setPickupQuery(selectedLocation.name);
+    } else {
+      setDestination(selectedLocation.name);
+      setDestinationQuery(selectedLocation.name);
+    }
+
+    setSuggestions([]);
+    setPanelOpen(false);
+
+    if (nextPickup.trim() && nextDestination.trim()) {
+      setVehiclePanelOpen(true);
+      setPanelOpen(false);
+    } else {
+      setVehiclePanelOpen(false);
+    }
+  };
+
   return (
     <div className="h-screen relative overflow-hidden">
       <div className="fixed p-6 top-0 flex items-center justify-between w-full">
@@ -126,7 +201,7 @@ const Home = () => {
           onClick={() => {
             logMeOut();
           }}
-          to="/captain-login"
+          to="/login"
           className="h-10 w-10 flex items-center justify-center rounded-full bg-white"
         >
           <LogOut size={16} strokeWidth={3} />
@@ -140,7 +215,7 @@ const Home = () => {
         />
       </div>
       <div className="flex flex-col justify-end absolute top-0 h-screen w-full rounded-full ">
-        <div className="bg-white p-6 h-[24%] relative">
+        <div className="bg-white p-6 h-[28%] relative">
           <h5
             ref={panelCloseRef}
             onClick={() => {
@@ -156,14 +231,15 @@ const Home = () => {
               submitHandler(e);
             }}
           >
-            <div className="line absolute h-16 w-1 top-[43%] left-10 bg-gray-900 rounded-full"></div>
+            <div className="line absolute h-16 w-1 top-[38%] left-10 bg-gray-900 rounded-full"></div>
             <input
               className="bg-[#eee] px-12 py-2 text-xl rounded-lg w-full mt-5"
-              onClick={() => {
-                setPanelOpen(true);
+              onFocus={() => {
+                setActiveField("pickup");
+                setPanelOpen(pickupQuery.trim().length >= 3);
               }}
               onChange={(e) => {
-                setPickup(e.target.value);
+                handleLocationInput("pickup", e.target.value);
               }}
               value={pickup}
               type="text"
@@ -171,22 +247,27 @@ const Home = () => {
             />
             <input
               className="bg-[#eee] px-12 py-2 text-xl rounded-lg w-full mt-3"
-              onClick={() => {
-                setPanelOpen(true);
+              onFocus={() => {
+                setActiveField("destination");
+                setPanelOpen(destinationQuery.trim().length >= 3);
               }}
               onChange={(e) => {
-                setDestination(e.target.value);
+                handleLocationInput("destination", e.target.value);
               }}
               value={destination}
               type="text"
               placeholder="Enter your destination"
             />
+            <div className="flex w-full items-center justify-center">
+            </div>
           </form>
         </div>
         <div ref={panelRef} className="bg-white">
           <LocationSearchPanel
-            setPanelOpen={setPanelOpen}
-            setVehiclePanelOpen={setVehiclePanelOpen}
+            activeField={activeField}
+            suggestions={suggestions}
+            isLoading={isLoadingSuggestions}
+            onSelect={handleSuggestionSelect}
           />
         </div>
       </div>
