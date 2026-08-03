@@ -21,34 +21,34 @@ const LookingForDriver = (props) => {
           className="h-40"
         />
         <div className="w-full mt-5">
-          <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
-              <MapPin size={20} />
-            </div>
-            <div className="border-gray-600 ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
-              <MapPinHouse size={16} strokeWidth={3} />
-            </div>
-            <div className="ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-5 p-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
-              <BanknoteArrowUp size={16} strokeWidth={3} />
-            </div>
-            <div className="ml-1">
-              <h3 className="text-lg font-medium">₹198.20</h3>
-              <p className="text-sm text-gray-600">Cash Cash</p>
-            </div>
-          </div>
-        </div>
+                  <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
+                      <MapPin size={20} />
+                    </div>
+                    <div className="border-gray-600 ml-1">
+                      <h3 className="text-lg font-medium">{props.completePickupAddress.name}</h3>
+                      <p className="text-sm text-gray-600">{props.completePickupAddress.address}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
+                      <MapPinHouse size={16} strokeWidth={3} />
+                    </div>
+                    <div className="ml-1">
+                      <h3 className="text-lg font-medium">{props.completeDestinationAddress.name}</h3>
+                      <p className="text-sm text-gray-600">{props.completeDestinationAddress.address}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-5 p-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
+                      <BanknoteArrowUp size={16} strokeWidth={3} />
+                    </div>
+                    <div className="ml-1">
+                      <h3 className="text-lg font-medium">₹{props.fare[props.selectedVehicle.vehicle]}</h3>
+                      <p className="text-sm text-gray-600">Cash Cash</p>
+                    </div>
+                  </div>
+                </div>
         
       </div>
     </div>

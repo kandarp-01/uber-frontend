@@ -24,7 +24,9 @@ const LocationSearchPanel = ({
           <button
             key={item.id || `${item.name}-${idx}`}
             type="button"
-            onClick={() => onSelect(item, activeField)}
+            onClick={() => {
+              onSelect(item, activeField);
+            }}
             className="flex w-full items-center justify-start gap-4 rounded-xl border-2 border-gray-200 p-3 text-left active:border-gray-900"
           >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">

@@ -6,7 +6,7 @@ import {
   MapPinHouse,
   ScrollText,
 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import api from "../api/api"
 import { Link } from "react-router-dom";
 import CaptainDetails from "../components/CaptainDetails";
@@ -14,8 +14,11 @@ import RidePopUp from "../components/RidePopUp";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
+import { CaptainDataContext } from "../context/CaptainContext";
+
 
 const CaptainHome = () => {
+  const {captain} = useContext(CaptainDataContext);
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
   const ridePopupRef = useRef(null)
@@ -78,7 +81,7 @@ const CaptainHome = () => {
         />
       </div>
       <div className="h-1/3 p-6">
-        <CaptainDetails/>
+        <CaptainDetails captain={captain}/>
       </div>
       <div ref={ridePopupRef} className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white">
         <RidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />

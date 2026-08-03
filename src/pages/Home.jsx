@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
+  const [completePickupAddress, setCompletePickupAddress] = useState({})
+  const [completeDestinationAddress, setCompleteDestinationAddress] = useState({})
   const [destination, setDestination] = useState("");
   const [pickupQuery, setPickupQuery] = useState("");
   const [destinationQuery, setDestinationQuery] = useState("");
@@ -28,9 +30,56 @@ const Home = () => {
   const [ridePanelOpen, setRidePanelOpen] = useState(false);
   const [driverPanelOpen, setDriverPanelOpen] = useState(false);
   const waitingPanelRef = useRef(null);
+  const [fare, setFare] = useState({});
   const [driverFoundPanelOpen, setDriverFoundPanelOpen] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState({})
+
+  const closeAllBottomPanels = () => {
+    setVehiclePanelOpen(false);
+    setRidePanelOpen(false);
+    setDriverPanelOpen(false);
+    setDriverFoundPanelOpen(false);
+    setPanelOpen(false);
+  };
+
+  const openVehiclePanel = () => {
+    closeAllBottomPanels();
+    setVehiclePanelOpen(true);
+  };
+
+  const openRidePanel = () => {
+    closeAllBottomPanels();
+    setRidePanelOpen(true);
+  };
+
+  const openDriverPanel = () => {
+    closeAllBottomPanels();
+    setDriverPanelOpen(true);
+  };
+
+  const openDriverFoundPanel = () => {
+    closeAllBottomPanels();
+    setDriverFoundPanelOpen(true);
+  };
+
   async function submitHandler(e) {
     e.preventDefault();
+
+    if (!pickup.trim() || !destination.trim()) {
+      return;
+    }
+
+    try {
+      const response = await api.get("/rides/get-fare", {
+        params: { pickup, destination },
+      });
+    
+      setFare(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+    openVehiclePanel();
   }
 
   useGSAP(
@@ -131,7 +180,7 @@ const Home = () => {
           params: { input: trimmedQuery },
         });
         setSuggestions(response.data || []);
-        setPanelOpen(!vehiclePanelOpen && (response.data || []).length > 0);
+        //setPanelOpen(!vehiclePanelOpen && (response.data || []).length > 0);
       } catch (error) {
         console.error(error);
         setSuggestions([]);
@@ -152,6 +201,14 @@ const Home = () => {
     }
   }
 
+  async function createRide(){
+    const response=await api.post('/rides/create',{
+      pickup,
+      destination,
+      vehicleType:selectedVehicle
+    })
+  }
+
   const handleLocationInput = (field, value) => {
     if (field === "pickup") {
       setPickup(value);
@@ -162,7 +219,14 @@ const Home = () => {
     }
 
     setActiveField(field);
-    setPanelOpen(value.trim().length >= 3);
+    const shouldOpenSuggestions =
+      value.trim().length >= 3 &&
+      !vehiclePanelOpen &&
+      !ridePanelOpen &&
+      !driverPanelOpen &&
+      !driverFoundPanelOpen;
+
+    setPanelOpen(shouldOpenSuggestions);
   };
 
   const handleSuggestionSelect = (selectedLocation, field) => {
@@ -171,22 +235,17 @@ const Home = () => {
       field === "destination" ? selectedLocation.name : destination;
 
     if (field === "pickup") {
+      setCompletePickupAddress({name:selectedLocation.name,address:selectedLocation.address})
       setPickup(selectedLocation.name);
       setPickupQuery(selectedLocation.name);
     } else {
+      setCompleteDestinationAddress({name:selectedLocation.name,address:selectedLocation.address})
       setDestination(selectedLocation.name);
       setDestinationQuery(selectedLocation.name);
     }
 
     setSuggestions([]);
     setPanelOpen(false);
-
-    if (nextPickup.trim() && nextDestination.trim()) {
-      setVehiclePanelOpen(true);
-      setPanelOpen(false);
-    } else {
-      setVehiclePanelOpen(false);
-    }
   };
 
   return (
@@ -236,7 +295,13 @@ const Home = () => {
               className="bg-[#eee] px-12 py-2 text-xl rounded-lg w-full mt-5"
               onFocus={() => {
                 setActiveField("pickup");
-                setPanelOpen(pickupQuery.trim().length >= 3);
+                const shouldOpenSuggestions =
+                  pickupQuery.trim().length >= 3 &&
+                  !vehiclePanelOpen &&
+                  !ridePanelOpen &&
+                  !driverPanelOpen &&
+                  !driverFoundPanelOpen;
+                setPanelOpen(shouldOpenSuggestions);
               }}
               onChange={(e) => {
                 handleLocationInput("pickup", e.target.value);
@@ -249,7 +314,13 @@ const Home = () => {
               className="bg-[#eee] px-12 py-2 text-xl rounded-lg w-full mt-3"
               onFocus={() => {
                 setActiveField("destination");
-                setPanelOpen(destinationQuery.trim().length >= 3);
+                const shouldOpenSuggestions =
+                  destinationQuery.trim().length >= 3 &&
+                  !vehiclePanelOpen &&
+                  !ridePanelOpen &&
+                  !driverPanelOpen &&
+                  !driverFoundPanelOpen;
+                setPanelOpen(shouldOpenSuggestions);
               }}
               onChange={(e) => {
                 handleLocationInput("destination", e.target.value);
@@ -258,7 +329,13 @@ const Home = () => {
               type="text"
               placeholder="Enter your destination"
             />
-            <div className="flex w-full items-center justify-center">
+            <div className="mt-4 flex w-full items-center justify-center">
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-black px-4 py-3 text-lg font-semibold text-white"
+              >
+                Find trip
+              </button>
             </div>
           </form>
         </div>
@@ -276,8 +353,10 @@ const Home = () => {
         className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
       >
         <VehiclePanel
-          setRidePanelOpen={setRidePanelOpen}
-          setVehiclePanelOpen={setVehiclePanelOpen}
+          fare={fare}
+          setSelectedVehicle={setSelectedVehicle}
+          setRidePanelOpen={openRidePanel}
+          setVehiclePanelOpen={closeAllBottomPanels}
         />
       </div>
       <div
@@ -285,8 +364,13 @@ const Home = () => {
         className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
       >
         <ConfirmRide
-          setDriverPanelOpen={setDriverPanelOpen}
-          setRidePanelOpen={setRidePanelOpen}
+          completePickupAddress={completePickupAddress}
+          completeDestinationAddress={completeDestinationAddress}
+          selectedVehicle={selectedVehicle}
+          fare={fare}
+          createRide={createRide}
+          setDriverPanelOpen={openDriverPanel}
+          setRidePanelOpen={closeAllBottomPanels}
         />
       </div>
       <div
@@ -294,15 +378,21 @@ const Home = () => {
         className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
       >
         <LookingForDriver
-          setDriverFoundPanelOpen={setDriverFoundPanelOpen}
-          setDriverPanelOpen={setDriverPanelOpen}
+          completePickupAddress={completePickupAddress}
+          completeDestinationAddress={completeDestinationAddress}
+          selectedVehicle={selectedVehicle}
+          fare={fare}
+          setDriverFoundPanelOpen={openDriverFoundPanel}
+          setDriverPanelOpen={closeAllBottomPanels}
         />
       </div>
       <div
         ref={waitingPanelRef}
         className="fixed w-full z-10 translate-y-full bottom-0 px-3 py-5 rounded-xl bg-white"
       >
-        <WaitingForDriver setDriverFoundPanelOpen={setDriverFoundPanelOpen} />
+        <WaitingForDriver
+          setDriverFoundPanelOpen={closeAllBottomPanels}
+        />
       </div>
     </div>
   );

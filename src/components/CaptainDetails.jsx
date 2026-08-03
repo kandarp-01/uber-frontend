@@ -1,7 +1,8 @@
 import { Clock, Gauge, ScrollText } from 'lucide-react'
 import React from 'react'
 
-const CaptainDetails = () => {
+
+const CaptainDetails = (props) => {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -11,7 +12,7 @@ const CaptainDetails = () => {
               src="https://media.wbur.org/wp/2020/07/Emmanuel-1000x776.jpg"
               alt=""
             />
-            <h4 className="text-lg font-medium">Aman Patel</h4>
+            <h4 className="text-lg font-medium">{props.captain.fullname.firstname+" "+props.captain.fullname.lastname}</h4>
           </div >
           <div className="flex flex-col items-center justify-start">
             <h4 className="text-xl font-semibold">₹500</h4>

@@ -14,6 +14,7 @@ const VehiclePanel = (props) => {
           </h5>
         <h2 className="text-2xl font-semibold mb-5">Select your ride</h2>
         <div onClick={()=>{
+            props.setSelectedVehicle({vehicle:'car',img:"https://d1a3f4spazzrp4.cloudfront.net/car-types/haloProductImages/v1.1/UberX_v1.png"})
             props.setVehiclePanelOpen(false);
             props.setRidePanelOpen(true);
         }} className="flex mb-1 border-2 active:border-gray-800 border-gray-100 rounded-xl w-full p-3 items-center justify-between">
@@ -33,10 +34,11 @@ const VehiclePanel = (props) => {
             <h5 className="font-medium text-base">2 mins away</h5>
             <p className="font-normal text-xs text-gray-600">Affordable, compact rides</p>
           </div>
-          <h2 className="text-lg font-semibold">₹198.20</h2>
+          <h2 className="text-lg font-semibold">₹{props.fare.car}</h2>
         </div>
 
         <div onClick={()=>{
+            props.setSelectedVehicle({vehicle:'motorcycle',img:"https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy85MjAwMTg5YS03MWMwLTRmNmQtYTlkZS0xYjZhODUyMzkwNzkucG5n"})
             props.setVehiclePanelOpen(false);
             props.setRidePanelOpen(true)
         }} className="flex mb-1 border-2 active:border-gray-800  border-gray-100 rounded-xl w-full p-3 items-center justify-between">
@@ -56,10 +58,11 @@ const VehiclePanel = (props) => {
             <h5 className="font-medium text-base">3 mins away</h5>
             <p className="font-normal text-xs text-gray-600">Affordable, motorcycle rides</p>
           </div>
-          <h2 className="text-lg font-semibold">₹68.20</h2>
+          <h2 className="text-lg font-semibold">₹{props.fare.motorcycle}</h2>
         </div>
 
         <div onClick={()=>{
+            props.setSelectedVehicle({vehicle:'auto',img:"https://cn-geo1.uber.com/image-proc/crop/resizecrop/udam/format=auto/width=552/height=552/srcb64=aHR0cHM6Ly90Yi1zdGF0aWMudWJlci5jb20vcHJvZC91ZGFtLWFzc2V0cy9mYzEwMWZmOC04MWExLTQ2YzMtOTk1YS02N2I0YmJkMmYyYmYuanBn"})
             props.setVehiclePanelOpen(false);
             props.setRidePanelOpen(true)
         }} className="flex border-2 active:border-gray-800  border-gray-100 rounded-xl w-full p-3 items-center justify-between">
@@ -79,7 +82,7 @@ const VehiclePanel = (props) => {
             <h5 className="font-medium text-base">2 mins away</h5>
             <p className="font-normal text-xs text-gray-600">Affordable, auto rides</p>
           </div>
-          <h2 className="text-lg font-semibold">₹118.20</h2>
+          <h2 className="text-lg font-semibold">₹{props.fare.auto}</h2>
         </div>
     </div>
   )
