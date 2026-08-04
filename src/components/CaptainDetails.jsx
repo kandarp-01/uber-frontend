@@ -9,7 +9,7 @@ const CaptainDetails = (props) => {
           <div className="flex items-center justify-start gap-3">
             <img
               className="w-13 h-13 rounded-full object-cover"
-              src="https://media.wbur.org/wp/2020/07/Emmanuel-1000x776.jpg"
+              src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/06/06/15/Chris-Pratt.jpg"
               alt=""
             />
             <h4 className="text-lg font-medium">{props.captain.fullname.firstname+" "+props.captain.fullname.lastname}</h4>

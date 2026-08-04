@@ -7,6 +7,7 @@ import {
 import React from "react";
 
 const RidePopUp = (props) => {
+  console.log(props.ride);
   return (
     <div>
       <h5
@@ -25,7 +26,7 @@ const RidePopUp = (props) => {
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDw3oa8g-lmRGmLEzr-7PkAG5dqTxLAb8g1vC87T1krg&s=10"
             alt=""
           />
-          <h2 className="text-lg font-medium">Utkarsh Apoorv</h2>
+          <h2 className="text-lg font-medium">{props.ride?.rideWithUser.user.fullname.firstname+" "+props.ride?.rideWithUser.user.fullname.lastname}</h2>
         </div>
         <h5 className="text-lg font-medium">2.2 KM</h5>
       </div>
@@ -40,21 +41,21 @@ const RidePopUp = (props) => {
             </div>
 
             <div className="border-gray-600 ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
+              <h3 className="text-lg font-medium">{props.ride?.completeLocation.completePickupAddress.name}</h3>
+              <p className="text-sm text-gray-600">{props.ride?.completeLocation.completePickupAddress.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
             <div className="flex items-center justify-center flex-col">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eee]">
-                <MapPinHouse size={16} strokeWidth={3} />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#eee]">
+                <MapPinHouse size={20} />
               </div>
               <h2 className="text-sm text-gray-600">Drop Off</h2>
             </div>
 
             <div className="ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
+              <h3 className="text-lg font-medium">{props.ride?.completeLocation.completeDestinationAddress.name}</h3>
+              <p className="text-sm text-gray-600">{props.ride?.completeLocation.completeDestinationAddress.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3">
@@ -62,7 +63,7 @@ const RidePopUp = (props) => {
               <BanknoteArrowUp size={16} strokeWidth={3} />
             </div>
             <div className="ml-1">
-              <h3 className="text-lg font-medium">₹198.20</h3>
+              <h3 className="text-lg font-medium">₹{props.ride?.rideWithUser.fare}</h3>
               <p className="text-sm text-gray-600">Cash Cash</p>
             </div>
           </div>

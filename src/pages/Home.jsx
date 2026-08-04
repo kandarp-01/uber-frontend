@@ -9,6 +9,11 @@ import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import api from "../api/api";
 import { Link } from "react-router-dom";
+import { SocketContext } from "../context/SocketContext";
+import { useContext } from "react";
+import { UserDataContext } from "../context/UserContext";
+
+
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -33,6 +38,11 @@ const Home = () => {
   const [fare, setFare] = useState({});
   const [driverFoundPanelOpen, setDriverFoundPanelOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState({})
+  const {socket} = useContext(SocketContext);
+  const {user} = useContext(UserDataContext);
+  useEffect(()=>{
+    socket.emit("join",{userType: "user", userId: user._id});
+  },[user,socket]);
 
   const closeAllBottomPanels = () => {
     setVehiclePanelOpen(false);
@@ -202,11 +212,20 @@ const Home = () => {
   }
 
   async function createRide(){
-    const response=await api.post('/rides/create',{
+    try{
+      const response=await api.post('/rides/create',{
       pickup,
       destination,
-      vehicleType:selectedVehicle
+      vehicleType:selectedVehicle.vehicle,
+      completePickupAddress,
+      completeDestinationAddress
     })
+    
+    }
+    catch(error){
+      console.error(error.response?.data || error.message);
+    }
+    
   }
 
   const handleLocationInput = (field, value) => {
