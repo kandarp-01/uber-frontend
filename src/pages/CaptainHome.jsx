@@ -65,6 +65,18 @@ const CaptainHome = () => {
     setRidePopupPanel(true);
   })
 
+  async function confirmRide() {
+    try {
+      const response= await api.post('/rides/confirm',{
+      rideId: ride.rideWithUser._id,
+      captainId: captain.captainId
+    })
+    } catch (error) {
+      console.error(error.response)
+    }
+    
+  }
+
 
 
   useGSAP(
@@ -139,13 +151,15 @@ const CaptainHome = () => {
           ride={ride}
           setConfirmRidePopupPanel={setConfirmRidePopupPanel}
           setRidePopupPanel={setRidePopupPanel}
+          confirmRide={confirmRide}
         />
       </div>
       <div
         ref={confirmRidePopupRef}
         className="fixed w-full z-10 translate-y-full h-screen bottom-0 px-3 py-5 rounded-xl bg-white"
       >
-        <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
+        <ConfirmRidePopUp ride={ride}
+         setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
       </div>
     </div>
   );

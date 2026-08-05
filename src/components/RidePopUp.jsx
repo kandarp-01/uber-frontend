@@ -7,7 +7,6 @@ import {
 import React from "react";
 
 const RidePopUp = (props) => {
-  console.log(props.ride);
   return (
     <div>
       <h5
@@ -80,6 +79,7 @@ const RidePopUp = (props) => {
           <button
             onClick={() => {
               props.setConfirmRidePopupPanel(true);
+              props.confirmRide();
               props.setRidePopupPanel(false);
             }}
             className="w-1/2 mt-5 bg-green-600 text-white py-2 rounded-xl text-2xl"

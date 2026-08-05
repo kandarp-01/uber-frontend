@@ -12,6 +12,7 @@ const CaptainSignup = () => {
   const [capacity, setCapacity] = useState("");
   const [plate, setPlate] = useState("");
   const [type, setType] = useState("");
+  const [model, setModel] = useState("")
   const navigate=useNavigate();
 
   const { captain, setCaptain } = useContext(CaptainDataContext);
@@ -30,6 +31,7 @@ const CaptainSignup = () => {
           plate,
           capacity: Number(capacity),
           vehicleType:type,
+          model:model
         }
       };
       const response = await api.post("/captains/register", captainData);
@@ -46,6 +48,7 @@ const CaptainSignup = () => {
       setCapacity("");
       setType("");
       setPlate("");
+      setModel("");
     } catch (error) {
       console.error(error.response.data);
     }
@@ -123,7 +126,7 @@ const CaptainSignup = () => {
               placeholder="Vehicle color"
             />
             <input
-              className="uppercase bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-lg placeholder:text-base"
+              className="uppercase bg-[#eeeeee] rounded px-4 py-2 w-1/2 text-lg placeholder:text-base placeholder:capitalize"
               type="text"
               onChange={(e) => {
                 setPlate(e.target.value);
@@ -160,6 +163,18 @@ const CaptainSignup = () => {
               <option value="auto">Auto</option>
               <option value="motorcycle">Bike</option>
             </select>
+          </div>
+          <div className="flex gap-4 mb-7">
+            <input
+              className="bg-[#eeeeee] rounded px-4 py-2 w-full text-lg placeholder:text-base"
+              type="text"
+              onChange={(e) => {
+                setModel(e.target.value);
+              }}
+              value={model}
+              required
+              placeholder="Vehicle Model"
+            />
           </div>
 
           <button className="bg-[#111] text-white font-semibold mb-2 rounded px-4 py-2 w-full text-lg placeholder:text-base">

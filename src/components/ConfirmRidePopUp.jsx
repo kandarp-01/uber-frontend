@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../api/api";
 
 const ConfirmRidePopUp = (props) => {
   const [firstDig, setFirstDig] = useState("");
@@ -16,8 +17,23 @@ const ConfirmRidePopUp = (props) => {
 
   async function submitHandler(e){
     e.preventDefault();
-    console.log(firstDig+secondDig+thirdDig+fourthDig);
-    navigate('/captain-riding');
+    const otp=(firstDig+secondDig+thirdDig+fourthDig); 
+    try {
+      const response = await api.get('/rides/start-ride',{params:{
+        rideId: props.ride.rideWithUser._id,
+        otp:otp
+      }})
+      if(response.status === 200){
+        props.setConfirmRidePopupPanel(false);
+        navigate('/captain-riding', { state: { ride: props.ride } });
+      }
+    } catch (error) {
+      console.error(error.response);
+    }
+    setFirstDig("");
+    setSecondDig("");
+    setThirdDig("");
+    setFourthDig("");
   }
   return (
     <div>
@@ -39,7 +55,7 @@ const ConfirmRidePopUp = (props) => {
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDw3oa8g-lmRGmLEzr-7PkAG5dqTxLAb8g1vC87T1krg&s=10"
             alt=""
           />
-          <h2 className="text-lg font-medium">Utkarsh Apoorv</h2>
+          <h2 className="text-lg font-medium">{props.ride?.rideWithUser.user.fullname.firstname+" "+props.ride?.rideWithUser.user.fullname.lastname}</h2>
         </div>
         <h5 className="text-lg font-medium">2.2 KM</h5>
       </div>
@@ -54,8 +70,8 @@ const ConfirmRidePopUp = (props) => {
             </div>
 
             <div className="border-gray-600 ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
+              <h3 className="text-lg font-medium">{props.ride?.completeLocation.completePickupAddress.name}</h3>
+              <p className="text-sm text-gray-600">{props.ride?.completeLocation.completePickupAddress.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-400">
@@ -67,8 +83,8 @@ const ConfirmRidePopUp = (props) => {
             </div>
 
             <div className="ml-1">
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text- text-gray-600">Kankariya Talab, Bhopal</p>
+              <h3 className="text-lg font-medium">{props.ride?.completeLocation.completeDestinationAddress.name}</h3>
+              <p className="text-sm text-gray-600">{props.ride?.completeLocation.completeDestinationAddress.address}</p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3">
@@ -80,7 +96,7 @@ const ConfirmRidePopUp = (props) => {
             </div>
 
             <div className="ml-1">
-              <h3 className="text-lg font-medium">₹198.20</h3>
+              <h3 className="text-lg font-medium">₹{props.ride?.rideWithUser.fare}</h3>
               <p className="text-sm text-gray-600">Cash Cash</p>
             </div>
           </div>
@@ -142,7 +158,6 @@ const ConfirmRidePopUp = (props) => {
             <button 
               
               onClick={(e) => {
-                props.setConfirmRidePopupPanel(false);
                 submitHandler(e);
               }}
               className="w-1/2 mt-5 bg-green-600 text-center text-white py-2 rounded-xl text-2xl"

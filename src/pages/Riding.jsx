@@ -1,8 +1,19 @@
 import { BanknoteArrowUp, House, MapPin, MapPinHouse } from "lucide-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { SocketContext } from "../context/SocketContext";
 
 const Riding = () => {
+  const location = useLocation();
+  const [rideData] = useState(() => location.state?.ride || null);
+  const {socket} = useContext(SocketContext)
+  const navigate=useNavigate();
+
+  socket.on("ride-ended",()=>{
+    navigate('/home');
+  })
+
+
   return (
     <div className="h-screen">
         <Link to='/home' className="fixed right-2 top-2 h-10 w-10 flex items-center justify-center rounded-full bg-white">
@@ -32,9 +43,9 @@ const Riding = () => {
           </div>
 
           <div className="text-right">
-            <h2 className="text-lg font-medium">Aman Patel</h2>
-            <h4 className="text-xl font-semibold -mt-1 -mb-1">UP32 XD 7563</h4>
-            <p className="text-base text-gray-600">Kia Sonet</p>
+            <h2 className="text-lg font-medium">{rideData.captain.fullname.firstname+" "+rideData.captain.fullname.lastname}</h2>
+          <h4 className="uppercase text-xl font-semibold -mt-1 -mb-1">{rideData.captain.vehicle.plate}</h4>
+            <p className="text-base text-gray-600">{rideData.captain.vehicle.model}</p>
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-between items-center">
@@ -44,8 +55,8 @@ const Riding = () => {
                 <MapPinHouse size={16} strokeWidth={3} />
               </div>
               <div className="ml-1">
-                <h3 className="text-lg font-medium">562/11-A</h3>
-                <p className="text-sm text-gray-600">Kankariya Talab, Bhopal</p>
+                <h3 className="text-lg font-medium">{rideData.completeDestinationAddress.name}</h3>
+                <p className="text-sm text-gray-600">{rideData.completeDestinationAddress.address}</p>
               </div>
             </div>
             <div className="flex items-center gap-5 p-3">
@@ -53,7 +64,7 @@ const Riding = () => {
                 <BanknoteArrowUp size={16} strokeWidth={3} />
               </div>
               <div className="ml-1">
-                <h3 className="text-lg font-medium">₹198.20</h3>
+                <h3 className="text-lg font-medium">₹{rideData.fare}</h3>
                 <p className="text-sm text-gray-600">Cash Cash</p>
               </div>
             </div>

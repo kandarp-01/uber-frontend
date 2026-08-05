@@ -8,7 +8,7 @@ import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import api from "../api/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 import { useContext } from "react";
 import { UserDataContext } from "../context/UserContext";
@@ -40,9 +40,22 @@ const Home = () => {
   const [selectedVehicle, setSelectedVehicle] = useState({})
   const {socket} = useContext(SocketContext);
   const {user} = useContext(UserDataContext);
+  const [ride, setRide] = useState(null)
+
+  const navigate=useNavigate()
   useEffect(()=>{
     socket.emit("join",{userType: "user", userId: user._id});
   },[user,socket]);
+
+  socket.on("ride-confirmed", ride =>{
+    setDriverFoundPanelOpen(true);
+    setRide(ride);
+  })
+
+  socket.on("ride-started", ride=>{
+    setDriverFoundPanelOpen(false);
+    navigate('/riding',{state:{ride:{...ride,completeDestinationAddress}}});
+  })
 
   const closeAllBottomPanels = () => {
     setVehiclePanelOpen(false);
@@ -411,6 +424,9 @@ const Home = () => {
       >
         <WaitingForDriver
           setDriverFoundPanelOpen={closeAllBottomPanels}
+          ride={ride}
+          completePickupAddress={completePickupAddress}
+          completeDestinationAddress={completeDestinationAddress}
         />
       </div>
     </div>
