@@ -18,6 +18,7 @@ import { CaptainDataContext } from "../context/CaptainContext";
 import { io } from "socket.io-client";
 import { useEffect } from "react";
 import { SocketContext } from "../context/SocketContext";
+import LiveTracking from "../components/LiveTracking";
 
 const CaptainHome = () => {
   const { captain } = useContext(CaptainDataContext);
@@ -134,11 +135,7 @@ const CaptainHome = () => {
         </Link>
       </div>
       <div className="h-2/3 w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt=""
-        />
+        <LiveTracking/>
       </div>
       <div className="h-1/3 p-6">
         <CaptainDetails captain={captain} />

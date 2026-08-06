@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
 import { useContext } from "react";
 import { UserDataContext } from "../context/UserContext";
+import LiveTracking from "../components/LiveTracking";
 
 
 
@@ -299,11 +300,7 @@ const Home = () => {
         </Link>
       </div>
       <div className="h-screen w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt=""
-        />
+        <LiveTracking/>
       </div>
       <div className="flex flex-col justify-end absolute top-0 h-screen w-full rounded-full ">
         <div className="bg-white p-6 h-[28%] relative">

@@ -1,7 +1,8 @@
-import { BanknoteArrowUp, House, MapPin, MapPinHouse } from "lucide-react";
-import React, { useContext, useState } from "react";
+import { BanknoteArrowUp, House, MapPinHouse } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SocketContext } from "../context/SocketContext";
+import LiveTracking from "../components/LiveTracking";
 
 const Riding = () => {
   const location = useLocation();
@@ -9,9 +10,15 @@ const Riding = () => {
   const {socket} = useContext(SocketContext)
   const navigate=useNavigate();
 
-  socket.on("ride-ended",()=>{
-    navigate('/home');
-  })
+  useEffect(() => {
+    socket.on("ride-ended",()=>{
+      navigate('/home');
+    })
+
+    return () => {
+      socket.off("ride-ended");
+    };
+  }, [navigate, socket]);
 
 
   return (
@@ -20,11 +27,7 @@ const Riding = () => {
             <House size={20} strokeWidth={2} />
         </Link>
       <div className="h-1/2 w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt=""
-        />
+        <LiveTracking className="h-full w-full" />
       </div>
       <div className="h-1/2 fixed w-full bottom-0 px-3 py-2 rounded-xl bg-white">
         

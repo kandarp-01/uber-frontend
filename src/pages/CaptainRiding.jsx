@@ -4,6 +4,7 @@ import { ChevronUp, House } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import FinishRide from '../components/FinishRide'
+import LiveTracking from '../components/LiveTracking'
 
 const CaptainRiding = () => {
     const location = useLocation();
@@ -42,11 +43,7 @@ const CaptainRiding = () => {
         </Link>
       </div>
       <div className="h-4/5 w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt=""
-        />
+        <LiveTracking />
       </div>
       <div onClick={()=>{
         setFinishRidePanelOpen(true);
